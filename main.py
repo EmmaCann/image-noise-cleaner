@@ -1,5 +1,5 @@
 from utils import load_image, save_image, create_output_folder, add_noise
-from filters import mean_filter
+from filters import mean_filter, gaussian_filter  # aggiungeremo altri filtri qui
 import numpy as np
 
 def main():
@@ -10,27 +10,35 @@ def main():
 
     create_output_folder()
 
-    # 1. Carica immagine originale
+    # Carica immagine originale
     image = load_image(input_path)
 
-    # 2. Aggiungi rumore artificiale (es. gaussiano)
+    #  Aggiungi rumore artificiale (es. gaussiano)
     noisy_image = add_noise(image, noise_type="gaussian", amount=30)
     save_image(noisy_image, noisy_path)
 
-    # 3. Applica filtro di media
-    filtered_image = mean_filter(noisy_image, kernel_size=3)
+  
+
+    # Filtro di media
+    # filtered_image = mean_filter(noisy_image, kernel_size=3)
+    # filtro_descrizione = "Filtro di Media (3x3)"
+
+    # Filtro Gaussiano
+    filtered_image = gaussian_filter(noisy_image, kernel_size=5, sigma=1.0)
+    filtro_descrizione = "Filtro Gaussiano (5x5, σ = 1.0)"
+
     save_image(filtered_image, output_image_path)
 
-    # 4. Dati statistici per il log
+    #  Dati statistici per il log
     mean_before = np.mean(noisy_image)
     mean_after = np.mean(filtered_image)
     var_before = np.var(noisy_image)
     var_after = np.var(filtered_image)
 
-    # 5. Log dettagliato
+    #  Log dettagliato
     with open(output_log_path, "w", encoding="utf-8") as log_file:
         log_file.write("LOG DEL PROGRAMMA\n")
-        log_file.write("Filtro applicato: Filtro di Media (3x3)\n")
+        log_file.write(f"Filtro applicato: {filtro_descrizione}\n")
         log_file.write("Rumore aggiunto: Gaussiano (σ = 30)\n")
         log_file.write(f"Media pixel prima del filtro: {mean_before:.2f}\n")
         log_file.write(f"Media pixel dopo il filtro: {mean_after:.2f}\n")
