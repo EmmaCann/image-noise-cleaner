@@ -1,5 +1,5 @@
 from utils import load_image, save_image, create_output_folder, add_noise
-from filters import mean_filter, gaussian_filter  # aggiungeremo altri filtri qui
+from filters import mean_filter, gaussian_filter,median_filter
 import numpy as np
 
 def main():
@@ -14,7 +14,7 @@ def main():
     image = load_image(input_path)
 
     #  Aggiungi rumore artificiale (es. gaussiano)
-    noisy_image = add_noise(image, noise_type="gaussian", amount=30)
+    noisy_image = add_noise(image, noise_type="salt_pepper", amount=10)
     save_image(noisy_image, noisy_path)
 
   
@@ -24,8 +24,13 @@ def main():
     # filtro_descrizione = "Filtro di Media (3x3)"
 
     # Filtro Gaussiano
-    filtered_image = gaussian_filter(noisy_image, kernel_size=5, sigma=1.0)
-    filtro_descrizione = "Filtro Gaussiano (5x5, σ = 1.0)"
+    #filtered_image = gaussian_filter(image, kernel_size=5, sigma=1.0)
+    #filtro_descrizione = "Filtro Gaussiano (5x5, σ = 1.0)"
+
+    # Filtro Mediano
+    filtered_image = median_filter(noisy_image, kernel_size=3)
+    filtro_descrizione = "Filtro Mediano (3x3)"
+
 
     save_image(filtered_image, output_image_path)
 

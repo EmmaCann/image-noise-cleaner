@@ -51,3 +51,24 @@ def gaussian_filter(image, kernel_size=3, sigma=1):
             filtered_image[i, j] = filtered_pixel
 
     return filtered_image
+
+
+
+def median_filter(image, kernel_size=3):
+    """
+    Applica un filtro mediano a un'immagine (grayscale).
+    kernel_size: dimensione del filtro (es. 3, 5, 7...)
+    """
+    pad_size = kernel_size // 2
+    padded_image = np.pad(image, pad_size, mode='edge')
+    filtered_image = np.zeros_like(image)
+
+    height, width = image.shape
+
+    for i in range(height):
+        for j in range(width):
+            region = padded_image[i:i+kernel_size, j:j+kernel_size]
+            median_value = np.median(region)
+            filtered_image[i, j] = median_value
+
+    return filtered_image
