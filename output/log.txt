@@ -1,8 +1,8 @@
 LOG DEL PROGRAMMA
-Filtro applicato: Filtro Mediano Adattivo (fino a 7x7)
+Filtro applicato: Filtro Bilaterale (5x5, σ_spaziale = 2.0, σ_intensità = 30.0)
 Rumore aggiunto: Gaussiano (σ = 30)
-Media pixel prima del filtro: 127.56
-Media pixel dopo il filtro: 127.53
-Varianza prima del filtro: 2963.09
-Varianza dopo il filtro: 610.19
+Media pixel prima del filtro: 127.10
+Media pixel dopo il filtro: 127.10
+Varianza prima del filtro: 1513.63
+Varianza dopo il filtro: 598.97
 Immagini salvate in: output/output.jpg, output/noisy.jpg

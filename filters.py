@@ -115,3 +115,39 @@ def adaptive_median_filter(image, max_kernel_size=7):
                 filtered_image[i, j] = z_med  # fallback: usa il mediano finale
 
     return filtered_image
+
+
+import numpy as np
+
+def bilateral_filter(image, kernel_size=5, sigma_spatial=2.0, sigma_intensity=30.0):
+    """
+    Applica un filtro bilaterale fatto a mano.
+    - kernel_size: dimensione della finestra
+    - sigma_spatial: influenza della distanza (es. 2.0)
+    - sigma_intensity: influenza della differenza di intensità (es. 30.0)
+    """
+    pad = kernel_size // 2
+    padded_image = np.pad(image, pad, mode='edge')
+    filtered_image = np.zeros_like(image, dtype=np.float64)
+
+    # Pre-calcola i pesi spaziali (dipendono solo dalla posizione)
+    spatial_weights = np.zeros((kernel_size, kernel_size))
+    for i in range(kernel_size):
+        for j in range(kernel_size):
+            dx = i - pad
+            dy = j - pad
+            spatial_weights[i, j] = np.exp(-(dx**2 + dy**2) / (2 * sigma_spatial**2))
+
+    height, width = image.shape
+
+    for i in range(height):
+        for j in range(width):
+            region = padded_image[i:i+kernel_size, j:j+kernel_size]
+            intensity_diff = region - image[i, j]
+            radiometric_weights = np.exp(-(intensity_diff**2) / (2 * sigma_intensity**2))
+            total_weights = spatial_weights * radiometric_weights
+            weight_sum = np.sum(total_weights)
+            pixel_value = np.sum(region * total_weights) / weight_sum
+            filtered_image[i, j] = pixel_value
+
+    return np.clip(filtered_image, 0, 255).astype(np.uint8)
