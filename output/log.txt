@@ -1,0 +1,8 @@
+LOG DEL PROGRAMMA
+Filtro applicato: Filtro di Media (3x3)
+Rumore aggiunto: Gaussiano (σ = 30)
+Media pixel prima del filtro: 127.07
+Media pixel dopo il filtro: 126.63
+Varianza prima del filtro: 1512.73
+Varianza dopo il filtro: 704.01
+Immagini salvate in: output/output.jpg, output/noisy.jpg
