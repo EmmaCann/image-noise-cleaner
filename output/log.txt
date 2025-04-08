@@ -1,8 +1,8 @@
 LOG DEL PROGRAMMA
-Filtro applicato: Filtro Non-Local Means (patch=3, window=11, h=30.0)
+Filtro applicato: Filtro Bilaterale (5x5, σ_spaziale = 2.0, σ_intensità = 30.0)
 Rumore aggiunto: Gaussiano (σ = 30)
-Media pixel prima del filtro: 118.66
-Media pixel dopo il filtro: 0.83
-Varianza prima del filtro: 102.35
-Varianza dopo il filtro: 101.80
+Media pixel prima del filtro: 132.75
+Media pixel dopo il filtro: 132.23
+Varianza prima del filtro: 3225.54
+Varianza dopo il filtro: 2778.28
 Immagini salvate in: output/output.jpg, output/noisy.jpg

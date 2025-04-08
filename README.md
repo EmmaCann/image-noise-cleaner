@@ -23,3 +23,7 @@ pip install -r requirements.txt
 Dopo aver installato nuove librerie nel progetto, aggiorna `requirements.txt` con:
 
 pip freeze > requirements.txt
+
+
+### per avviare l'esecuzione
+python main.py
