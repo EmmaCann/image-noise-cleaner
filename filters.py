@@ -151,3 +151,5 @@ def bilateral_filter(image, kernel_size=5, sigma_spatial=2.0, sigma_intensity=30
             filtered_image[i, j] = pixel_value
 
     return np.clip(filtered_image, 0, 255).astype(np.uint8)
+
+

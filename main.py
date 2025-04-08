@@ -1,9 +1,9 @@
 from utils import load_image, save_image, create_output_folder, add_noise
-from filters import mean_filter, gaussian_filter,median_filter,adaptive_median_filter,bilateral_filter
+from filters import mean_filter, gaussian_filter,median_filter,adaptive_median_filter,bilateral_filter,non_local_means_filter
 import numpy as np
 
 def main():
-    input_path = "images/input.jpg"
+    input_path = "images/input.png"
     noisy_path = "output/noisy.jpg"
     output_image_path = "output/output.jpg"
     output_log_path = "output/log.txt"
@@ -12,9 +12,11 @@ def main():
 
     # Carica immagine originale
     image = load_image(input_path)
-
+    
     #  Aggiungi rumore artificiale (es. gaussiano)
     noisy_image = add_noise(image, noise_type="gaussian", amount=30)
+    noisy_image = noisy_image[:100, :100]
+
     save_image(noisy_image, noisy_path)
 
   
@@ -39,14 +41,12 @@ def main():
     filtered_image = bilateral_filter(image, kernel_size=5, sigma_spatial=2.0, sigma_intensity=30.0)
     filtro_descrizione = "Filtro Bilaterale (5x5, σ_spaziale = 2.0, σ_intensità = 30.0)"
 
-
-
     save_image(filtered_image, output_image_path)
 
     #  Dati statistici per il log
-    mean_before = np.mean(noisy_image)
+    mean_before = np.mean(image)
     mean_after = np.mean(filtered_image)
-    var_before = np.var(noisy_image)
+    var_before = np.var(image)
     var_after = np.var(filtered_image)
 
     #  Log dettagliato
