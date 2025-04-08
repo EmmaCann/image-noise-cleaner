@@ -37,8 +37,8 @@ def scegli_filtri():
     return sequenza
 
 def main():
-    input_path = "images/input.png"
-    noisy_path = "output/noisy.jpg"
+    input_path = "images/balloons_noisy.png"
+    ##noisy_path = "output/noisy.jpg"
     output_image_path = "output/output.jpg"
     output_log_path = "output/log.txt"
 
@@ -48,14 +48,15 @@ def main():
     image = load_image(input_path)
 
     # Aggiungi rumore artificiale
-    noisy_image = add_noise(image, noise_type="salt_pepper", amount=15)
-    save_image(noisy_image, noisy_path)
+   ## noisy_image = add_noise(image, noise_type="salt_pepper", amount=15)
+    ##save_image(noisy_image, noisy_path)
 
     # Richiesta filtri all’utente
     filters_to_apply = scegli_filtri()
 
     # Applica i filtri scelti
-    filtered_image = noisy_image
+    #filtered_image = noisy_image
+    filtered_image = image
     descrizioni = []
 
     for filtro in filters_to_apply:
@@ -66,9 +67,9 @@ def main():
     save_image(filtered_image, output_image_path)
 
     # Statistiche
-    mean_before = np.mean(noisy_image)
+    #mean_before = np.mean(noisy_image)
     mean_after = np.mean(filtered_image)
-    var_before = np.var(noisy_image)
+    #var_before = np.var(noisy_image)
     var_after = np.var(filtered_image)
 
     # Log dettagliato
@@ -79,11 +80,11 @@ def main():
         for desc in descrizioni:
             log_file.write(f"  - {desc}\n")
         log_file.write("\n")
-        log_file.write(f"Media pixel prima dei filtri: {mean_before:.2f}\n")
+        #log_file.write(f"Media pixel prima dei filtri: {mean_before:.2f}\n")
         log_file.write(f"Media pixel dopo i filtri: {mean_after:.2f}\n")
-        log_file.write(f"Varianza prima dei filtri: {var_before:.2f}\n")
+        #log_file.write(f"Varianza prima dei filtri: {var_before:.2f}\n")
         log_file.write(f"Varianza dopo i filtri: {var_after:.2f}\n")
-        log_file.write(f"\nImmagini salvate in:\n - {noisy_path} (rumore)\n - {output_image_path} (filtrata)\n")
+       # log_file.write(f"\nImmagini salvate in:\n - {noisy_path} (rumore)\n - {output_image_path} (filtrata)\n")
 
     print("\n✅ Filtri applicati con successo. Immagini e log salvati.")
 
