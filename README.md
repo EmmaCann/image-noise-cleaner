@@ -25,5 +25,8 @@ Dopo aver installato nuove librerie nel progetto, aggiorna `requirements.txt` co
 pip freeze > requirements.txt
 
 
-### per avviare l'esecuzione
+### per avviare l'esecuzione da terminale
 python main.py
+
+### per avviare l'esecuzione da interfaccia grafica
+python gui.py
