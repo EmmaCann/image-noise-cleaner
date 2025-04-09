@@ -1,5 +1,16 @@
 import numpy as np
 
+
+def apply_filter_to_channels(image, filter_func, **kwargs):
+    if image.ndim == 3:  # immagine RGB
+        channels = []
+        for c in range(3):
+            channel_filtered = filter_func(image[:, :, c], **kwargs)
+            channels.append(channel_filtered)
+        return np.stack(channels, axis=2)
+    else:
+        return filter_func(image, **kwargs)
+
 def mean_filter(image, kernel_size=3):
     """
     Applica un filtro di media a un'immagine (array NumPy in scala di grigi).

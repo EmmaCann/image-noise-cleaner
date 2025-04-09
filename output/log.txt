@@ -7,5 +7,5 @@ Filtri applicati in sequenza:
   - Filtro Gaussiano {'kernel_size': 3, 'sigma': 1}
   - Filtro Bilaterale {'kernel_size': 5, 'sigma_spatial': 2, 'sigma_intensity': 30}
 
-Media pixel dopo i filtri: 84.72
-Varianza dopo i filtri: 2318.31
+Media pixel dopo i filtri: 82.77
+Varianza dopo i filtri: 3379.48

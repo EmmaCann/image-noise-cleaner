@@ -1,5 +1,6 @@
 from utils import load_image, save_image, create_output_folder, add_noise
 from filters import mean_filter, gaussian_filter, median_filter, adaptive_median_filter, bilateral_filter
+from filters import apply_filter_to_channels
 import numpy as np
 
 # Dizionario dei filtri disponibili
@@ -60,7 +61,7 @@ def main():
     descrizioni = []
 
     for filtro in filters_to_apply:
-        filtered_image = filtro["func"](filtered_image, **filtro["params"])
+        filtered_image = apply_filter_to_channels(filtered_image, filtro["func"], **filtro["params"])
         descrizioni.append(f"{filtro['name']} {filtro['params']}")
 
     # Salva immagine finale
