@@ -1,11 +1,30 @@
-LOG DEL PROGRAMMA
-Rumore aggiunto: sale e pepe (amount = 30)
+========== LOG ELABORAZIONE IMMAGINE ==========
 
-Filtri applicati in sequenza:
-  - Filtro Mediano {'kernel_size': 3}
-  - Filtro Mediano Adattivo {'max_kernel_size': 5}
-  - Filtro Gaussiano {'kernel_size': 3, 'sigma': 1}
-  - Filtro Bilaterale {'kernel_size': 5, 'sigma_spatial': 2, 'sigma_intensity': 30}
+🗂️  File: images/balloons_noisy.png
+📐 Dimensioni: 480 x 640 x 3
+🖼️ Tipo immagine: RGB
 
-Media pixel dopo i filtri: 82.77
-Varianza dopo i filtri: 3379.48
+🎛️ FILTRI APPLICATI:
+  1. Filtro Mediano {'kernel_size': 3}
+  2. Filtro Mediano Adattivo {'max_kernel_size': 5}
+  3. Filtro Gaussiano {'kernel_size': 3, 'sigma': 1}
+  4. Filtro Bilaterale {'kernel_size': 5, 'sigma_spatial': 2, 'sigma_intensity': 30}
+
+📊 STATISTICHE
+PRIMA - Canale 0: media=109.07, varianza=6898.28
+PRIMA - Canale 1: media=92.02, varianza=7433.05
+PRIMA - Canale 2: media=89.87, varianza=8520.84
+DOPO - Canale 0: media=99.92, varianza=2611.42
+DOPO - Canale 1: media=75.69, varianza=2826.35
+DOPO - Canale 2: media=72.70, varianza=4254.98
+
+📉 RIDUZIONE VARIANZA per canale:
+  Canale 0: -62.14%
+  Canale 1: -61.98%
+  Canale 2: -50.06%
+
+🕒 Tempo di esecuzione: 41.90 secondi
+📁 Immagine salvata in: output/output.jpg
+🗓️  Timestamp: 2025-04-09 10:27:57
+
+================================================
