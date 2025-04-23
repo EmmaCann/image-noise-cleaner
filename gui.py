@@ -106,11 +106,22 @@ def applica_filtri():
 
     progress["maximum"] = len(filtri_da_applicare)
     for i, (nome, func, params) in enumerate(filtri_da_applicare):
+        step_start = time.time()
         filtered = apply_filter_to_channels(filtered, func, **params)
+        step_time = time.time() - step_start
+
         descrizioni.append(f"{nome} {params}")
         progress["value"] = i + 1
-        percent.set(f"{int((i + 1) / len(filtri_da_applicare) * 100)}%")
+
+        pct = int((i + 1) / len(filtri_da_applicare) * 100)
+        percent.set(f"{pct}%")
+
+        remaining = (len(filtri_da_applicare) - (i + 1)) * step_time
+        time_remaining_text.set(f"Tempo stimato rimanente: {remaining:.1f} sec")
+
         root.update_idletasks()
+
+
 
     end_time = time.time()
 
@@ -148,6 +159,7 @@ root.title("Image Denoising - GUI")
 root.geometry("1000x700")
 entry_params = {}
 percent = tk.StringVar(value="0%")
+time_remaining_text = tk.StringVar(value="Tempo stimato rimanente: --")
 
 # Frame sinistro (immagini)
 frame_img = tk.Frame(root)
@@ -193,6 +205,9 @@ progress = ttk.Progressbar(frame_ctrl, length=300, mode="determinate")
 progress.pack(pady=(10, 0))
 label_percent = tk.Label(frame_ctrl, textvariable=percent)
 label_percent.pack()
+label_time_remaining = tk.Label(frame_ctrl, textvariable=time_remaining_text)
+label_time_remaining.pack()
+
 
 # Esegui
 tk.Button(frame_ctrl, text="🧪 Applica filtri", command=applica_filtri, bg="green", fg="white").pack(pady=20)
