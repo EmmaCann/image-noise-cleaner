@@ -16,7 +16,6 @@ from filters import (
 )
 from utils import save_image, load_image
 
-# === CONFIGURAZIONE FILTRI ===
 FILTRI = {
     "Filtro di Media": {"func": mean_filter, "params": ["kernel_size"]},
     "Filtro Gaussiano": {"func": gaussian_filter, "params": ["kernel_size", "sigma"]},
@@ -29,6 +28,54 @@ selected_image = None
 output_folder = None
 img_preview_before = None
 img_preview_after = None
+filtro_frames = []
+
+class FiltroFrame(tk.Frame):
+    def __init__(self, master, remove_callback, move_up_callback, move_down_callback):
+        super().__init__(master)
+        self.remove_callback = remove_callback
+        self.move_up_callback = move_up_callback
+        self.move_down_callback = move_down_callback
+
+        self.filtro_var = tk.StringVar()
+        self.filtro_var.set(list(FILTRI.keys())[0])
+        self.filtro_menu = tk.OptionMenu(self, self.filtro_var, *FILTRI.keys(), command=self.update_parametri)
+        self.filtro_menu.pack(side="left", padx=5, pady=5)
+
+        self.parametri_frame = tk.Frame(self)
+        self.parametri_frame.pack(side="left", padx=5, pady=5)
+        self.parametri_entries = {}
+        self.update_parametri(self.filtro_var.get())
+
+        self.btn_up = tk.Button(self, text="↑", command=self.move_up_callback)
+        self.btn_up.pack(side="left", padx=2)
+
+        self.btn_down = tk.Button(self, text="↓", command=self.move_down_callback)
+        self.btn_down.pack(side="left", padx=2)
+
+        self.btn_remove = tk.Button(self, text="✖", command=self.remove_callback)
+        self.btn_remove.pack(side="left", padx=2)
+
+    def update_parametri(self, filtro_name):
+        for widget in self.parametri_frame.winfo_children():
+            widget.destroy()
+        self.parametri_entries.clear()
+        for param in FILTRI[filtro_name]["params"]:
+            lbl = tk.Label(self.parametri_frame, text=param)
+            lbl.pack(side="left")
+            entry = tk.Entry(self.parametri_frame, width=5)
+            entry.insert(0, "3")
+            entry.pack(side="left", padx=2)
+            self.parametri_entries[param] = entry
+
+    def get_filtro(self):
+        filtro_name = self.filtro_var.get()
+        func = FILTRI[filtro_name]["func"]
+        params = {}
+        for param, entry in self.parametri_entries.items():
+            val = entry.get()
+            params[param] = float(val) if "." in val else int(val)
+        return (filtro_name, func, params)
 
 def scegli_immagine():
     global selected_image, img_preview_before
@@ -46,34 +93,37 @@ def scegli_cartella():
     if output_folder:
         label_output.config(text=output_folder)
 
-def aggiorna_parametri(*args):
-    for widget in frame_params.winfo_children():
-        widget.destroy()
-    entry_params.clear()
-    selezionati = listbox.curselection()
-    for i in selezionati:
-        nome = listbox.get(i)
-        for p in FILTRI[nome]["params"]:
-            frame = tk.Frame(frame_params)
-            tk.Label(frame, text=f"{nome} - {p}").pack(side="left")
-            entry = tk.Entry(frame, width=6)
-            entry.insert(0, "3")
-            entry.pack(side="right")
-            frame.pack(pady=1)
-            entry_params[f"{nome}:{p}"] = entry
+def aggiungi_filtro():
+    def remove():
+        filtro_frame.destroy()
+        filtro_frames.remove(filtro_frame)
+
+    def move_up():
+        idx = filtro_frames.index(filtro_frame)
+        if idx > 0:
+            filtro_frames[idx], filtro_frames[idx - 1] = filtro_frames[idx - 1], filtro_frames[idx]
+            refresh_filtro_list()
+
+    def move_down():
+        idx = filtro_frames.index(filtro_frame)
+        if idx < len(filtro_frames) - 1:
+            filtro_frames[idx], filtro_frames[idx + 1] = filtro_frames[idx + 1], filtro_frames[idx]
+            refresh_filtro_list()
+
+    filtro_frame = FiltroFrame(frame_filtri_lista, remove, move_up, move_down)
+    filtro_frames.append(filtro_frame)
+    refresh_filtro_list()
+
+def refresh_filtro_list():
+    for widget in frame_filtri_lista.winfo_children():
+        widget.pack_forget()
+    for frame in filtro_frames:
+        frame.pack(fill="x", pady=3)
 
 def stats(img):
     if img.ndim == 2:
         return [(np.mean(img), np.var(img))]
     return [(np.mean(img[:, :, c]), np.var(img[:, :, c])) for c in range(img.shape[2])]
-
-def toggle_filtri():
-    if frame_filtri.winfo_viewable():
-        frame_filtri.pack_forget()
-        btn_toggle_filtri.config(text="➕ Mostra filtri")
-    else:
-        frame_filtri.pack(pady=5, fill="x")
-        btn_toggle_filtri.config(text="➖ Nascondi filtri")
 
 def applica_filtri():
     global selected_image, output_folder, img_preview_after
@@ -83,22 +133,13 @@ def applica_filtri():
     if output_folder is None:
         messagebox.showerror("Errore", "Seleziona una cartella di output.")
         return
-    selezionati = listbox.curselection()
-    if not selezionati:
-        messagebox.showerror("Errore", "Seleziona almeno un filtro.")
+    if not filtro_frames:
+        messagebox.showerror("Errore", "Aggiungi almeno un filtro.")
         return
 
     os.makedirs(output_folder, exist_ok=True)
 
-    filtri_da_applicare = []
-    for i in selezionati:
-        nome = listbox.get(i)
-        func = FILTRI[nome]["func"]
-        params = {}
-        for p in FILTRI[nome]["params"]:
-            val = entry_params[f"{nome}:{p}"].get()
-            params[p] = float(val) if "." in val else int(val)
-        filtri_da_applicare.append((nome, func, params))
+    filtri_da_applicare = [f.get_filtro() for f in filtro_frames]
 
     filtered = selected_image
     start_time = time.time()
@@ -120,8 +161,6 @@ def applica_filtri():
         time_remaining_text.set(f"Tempo stimato rimanente: {remaining:.1f} sec")
 
         root.update_idletasks()
-
-
 
     end_time = time.time()
 
@@ -145,7 +184,6 @@ def applica_filtri():
         log.write(f"Salvato in: {output_path}\n")
         log.write(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
-    # Mostra immagine filtrata
     image_out = Image.fromarray(filtered.astype(np.uint8)).resize((350, 350))
     img_preview_after = ImageTk.PhotoImage(image_out)
     canvas_after.create_image(0, 0, anchor="nw", image=img_preview_after)
@@ -156,12 +194,11 @@ def applica_filtri():
 
 root = tk.Tk()
 root.title("Image Denoising - GUI")
-root.geometry("1000x700")
-entry_params = {}
+root.geometry("1100x700")
 percent = tk.StringVar(value="0%")
 time_remaining_text = tk.StringVar(value="Tempo stimato rimanente: --")
 
-# Frame sinistro (immagini)
+# Frame sinistro
 frame_img = tk.Frame(root)
 frame_img.pack(side="left", padx=10, pady=10)
 
@@ -173,7 +210,7 @@ tk.Label(frame_img, text="DOPO").pack()
 canvas_after = tk.Canvas(frame_img, width=350, height=350, bg="lightgray")
 canvas_after.pack()
 
-# Frame destro (controlli)
+# Frame destro
 frame_ctrl = tk.Frame(root)
 frame_ctrl.pack(side="right", fill="both", expand=True, padx=10, pady=10)
 
@@ -185,31 +222,17 @@ tk.Button(frame_ctrl, text="📁 Seleziona cartella output", command=scegli_cart
 label_output = tk.Label(frame_ctrl, text="Nessuna cartella selezionata")
 label_output.pack(pady=5)
 
-btn_toggle_filtri = tk.Button(frame_ctrl, text="➕ Mostra filtri", command=toggle_filtri)
-btn_toggle_filtri.pack(pady=(10, 0))
+tk.Label(frame_ctrl, text="🎛️ Filtri da applicare").pack(pady=(10, 0))
+frame_filtri_lista = tk.Frame(frame_ctrl)
+frame_filtri_lista.pack(pady=5, fill="x")
 
-# Contenitore filtri e parametri (a comparsa)
-frame_filtri = tk.Frame(frame_ctrl)
-listbox = tk.Listbox(frame_filtri, selectmode=tk.MULTIPLE, height=6)
-for nome in FILTRI:
-    listbox.insert(tk.END, nome)
-listbox.pack(pady=5, fill="x")
-listbox.bind("<<ListboxSelect>>", aggiorna_parametri)
+tk.Button(frame_ctrl, text="➕ Aggiungi filtro", command=aggiungi_filtro).pack(pady=5)
 
-frame_params = tk.Frame(frame_filtri)
-frame_params.pack(pady=5)
-entry_params = {}
-
-# Barra di avanzamento
 progress = ttk.Progressbar(frame_ctrl, length=300, mode="determinate")
 progress.pack(pady=(10, 0))
-label_percent = tk.Label(frame_ctrl, textvariable=percent)
-label_percent.pack()
-label_time_remaining = tk.Label(frame_ctrl, textvariable=time_remaining_text)
-label_time_remaining.pack()
+tk.Label(frame_ctrl, textvariable=percent).pack()
+tk.Label(frame_ctrl, textvariable=time_remaining_text).pack()
 
-
-# Esegui
 tk.Button(frame_ctrl, text="🧪 Applica filtri", command=applica_filtri, bg="green", fg="white").pack(pady=20)
 
 root.mainloop()
