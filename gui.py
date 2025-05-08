@@ -13,8 +13,9 @@ from filters import (
     adaptive_median_filter,
     bilateral_filter,
     apply_filter_to_channels,
+    min_filter,
+    max_filter,
 )
-from utils import save_image, load_image
 
 FILTRI = {
     "Filtro di Media": {"func": mean_filter, "params": ["kernel_size"]},
@@ -22,7 +23,10 @@ FILTRI = {
     "Filtro Mediano": {"func": median_filter, "params": ["kernel_size"]},
     "Filtro Mediano Adattivo": {"func": adaptive_median_filter, "params": ["max_kernel_size"]},
     "Filtro Bilaterale": {"func": bilateral_filter, "params": ["kernel_size", "sigma_spatial", "sigma_intensity"]},
+    "Filtro Minimo": {"func": min_filter, "params": ["kernel_size"]},
+    "Filtro Massimo": {"func": max_filter, "params": ["kernel_size"]},
 }
+
 
 selected_image = None
 output_folder = None

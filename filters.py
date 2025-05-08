@@ -164,3 +164,39 @@ def bilateral_filter(image, kernel_size=5, sigma_spatial=2.0, sigma_intensity=30
     return np.clip(filtered_image, 0, 255).astype(np.uint8)
 
 
+
+def min_filter(image, kernel_size=3):
+    """
+    Filtro Minimo: sostituisce ogni pixel con il valore minimo nella finestra.
+    Utile per rimuovere rumore impulsivo chiaro.
+    """
+    pad = kernel_size // 2
+    padded_image = np.pad(image, pad, mode='edge')
+    filtered_image = np.zeros_like(image)
+
+    height, width = image.shape
+
+    for i in range(height):
+        for j in range(width):
+            region = padded_image[i:i+kernel_size, j:j+kernel_size]
+            filtered_image[i, j] = np.min(region)
+
+    return filtered_image
+
+def max_filter(image, kernel_size=3):
+    """
+    Filtro Massimo: sostituisce ogni pixel con il valore massimo nella finestra.
+    Utile per rimuovere rumore impulsivo scuro.
+    """
+    pad = kernel_size // 2
+    padded_image = np.pad(image, pad, mode='edge')
+    filtered_image = np.zeros_like(image)
+
+    height, width = image.shape
+
+    for i in range(height):
+        for j in range(width):
+            region = padded_image[i:i+kernel_size, j:j+kernel_size]
+            filtered_image[i, j] = np.max(region)
+
+    return filtered_image
