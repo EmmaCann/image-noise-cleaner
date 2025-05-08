@@ -5,6 +5,9 @@ import os
 import numpy as np
 from datetime import datetime
 import time
+from utils import load_image, save_image
+
+
 
 from filters import (
     mean_filter,
@@ -193,6 +196,11 @@ def applica_filtri():
     canvas_after.create_image(0, 0, anchor="nw", image=img_preview_after)
 
     messagebox.showinfo("✅ Fatto", f"Filtri applicati correttamente.\nFile salvati in:\n{output_folder}")
+    # Reset UI per nuova esecuzione
+    progress["value"] = 0
+    percent.set("0%")
+    time_remaining_text.set("Tempo stimato rimanente: --")
+
 
 # === INTERFACCIA GRAFICA ===
 
