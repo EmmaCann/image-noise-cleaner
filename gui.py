@@ -195,14 +195,14 @@ def applica_filtri():
     img_preview_after = ImageTk.PhotoImage(image_out)
     canvas_after.create_image(0, 0, anchor="nw", image=img_preview_after)
 
-    messagebox.showinfo("✅ Fatto", f"Filtri applicati correttamente.\nFile salvati in:\n{output_folder}")
+    messagebox.showinfo(" Fatto", f"Filtri applicati correttamente.\nFile salvati in:\n{output_folder}")
     # Reset UI per nuova esecuzione
     progress["value"] = 0
     percent.set("0%")
     time_remaining_text.set("Tempo stimato rimanente: --")
 
 
-# === INTERFACCIA GRAFICA ===
+#  INTERFACCIA GRAFICA 
 
 root = tk.Tk()
 root.title("Image Denoising - GUI")
@@ -226,25 +226,25 @@ canvas_after.pack()
 frame_ctrl = tk.Frame(root)
 frame_ctrl.pack(side="right", fill="both", expand=True, padx=10, pady=10)
 
-tk.Button(frame_ctrl, text="📂 Carica immagine", command=scegli_immagine).pack()
+tk.Button(frame_ctrl, text=" Carica immagine", command=scegli_immagine).pack()
 label_path = tk.Label(frame_ctrl, text="Nessuna immagine selezionata")
 label_path.pack(pady=5)
 
-tk.Button(frame_ctrl, text="📁 Seleziona cartella output", command=scegli_cartella).pack()
+tk.Button(frame_ctrl, text=" Seleziona cartella output", command=scegli_cartella).pack()
 label_output = tk.Label(frame_ctrl, text="Nessuna cartella selezionata")
 label_output.pack(pady=5)
 
-tk.Label(frame_ctrl, text="🎛️ Filtri da applicare").pack(pady=(10, 0))
+tk.Label(frame_ctrl, text=" Filtri da applicare").pack(pady=(10, 0))
 frame_filtri_lista = tk.Frame(frame_ctrl)
 frame_filtri_lista.pack(pady=5, fill="x")
 
-tk.Button(frame_ctrl, text="➕ Aggiungi filtro", command=aggiungi_filtro).pack(pady=5)
+tk.Button(frame_ctrl, text="Aggiungi filtro", command=aggiungi_filtro).pack(pady=5)
 
 progress = ttk.Progressbar(frame_ctrl, length=300, mode="determinate")
 progress.pack(pady=(10, 0))
 tk.Label(frame_ctrl, textvariable=percent).pack()
 tk.Label(frame_ctrl, textvariable=time_remaining_text).pack()
 
-tk.Button(frame_ctrl, text="🧪 Applica filtri", command=applica_filtri, bg="green", fg="white").pack(pady=20)
+tk.Button(frame_ctrl, text=" Applica filtri", command=applica_filtri, bg="green", fg="white").pack(pady=20)
 
 root.mainloop()

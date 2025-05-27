@@ -15,7 +15,7 @@ filtro_catalogo = {
 }
 
 def scegli_filtri():
-    print("\n🎛️  Filtri disponibili:")
+    print("\n Filtri disponibili:")
     for k, v in filtro_catalogo.items():
         print(f"{k}. {v['name']}")
 
@@ -26,7 +26,7 @@ def scegli_filtri():
         if scelta in filtro_catalogo:
             filtro = filtro_catalogo[scelta]
             parametri = {}
-            print(f"\n➡️  Parametri per {filtro['name']}:")
+            print(f"\n  Parametri per {filtro['name']}:")
             for p in filtro["params"]:
                 val = input(f" - {p}: ")
                 parametri[p] = float(val) if "." in val else int(val)
@@ -56,7 +56,7 @@ def main():
     # Carica immagine originale
     image = load_image(input_path)
 
-    # Rumore artificiale (commentato per i test)
+    # Rumore artificiale 
     # noisy_image = add_noise(image, noise_type="salt_pepper", amount=15)
     # save_image(noisy_image, noisy_path)
     # image = noisy_image
@@ -85,17 +85,17 @@ def main():
     # Log dettagliato
     with open(output_log_path, "w", encoding="utf-8") as log_file:
         log_file.write("========== LOG ELABORAZIONE IMMAGINE ==========\n\n")
-        log_file.write(f"🗂️  File: {input_path}\n")
-        log_file.write(f"📐 Dimensioni: {image.shape[0]} x {image.shape[1]} x {image.shape[2] if image.ndim == 3 else 1}\n")
-        log_file.write(f"🖼️ Tipo immagine: {'RGB' if image.ndim == 3 else 'Grayscale'}\n\n")
+        log_file.write(f" File: {input_path}\n")
+        log_file.write(f" Dimensioni: {image.shape[0]} x {image.shape[1]} x {image.shape[2] if image.ndim == 3 else 1}\n")
+        log_file.write(f" Tipo immagine: {'RGB' if image.ndim == 3 else 'Grayscale'}\n\n")
 
-        # log_file.write("🔧 Rumore artificiale: Salt & Pepper (amount = 15%)\n\n")
+        # log_file.write("Rumore artificiale: Salt & Pepper (amount = 15%)\n\n")
 
-        log_file.write("🎛️ FILTRI APPLICATI:\n")
+        log_file.write(" FILTRI APPLICATI:\n")
         for i, desc in enumerate(descrizioni, 1):
             log_file.write(f"  {i}. {desc}\n")
 
-        log_file.write("\n📊 STATISTICHE\n")
+        log_file.write("\n STATISTICHE\n")
 
         def format_stats(label, stats):
             if isinstance(stats[0], tuple):  # RGB
@@ -109,20 +109,20 @@ def main():
         format_stats("DOPO", stats_after)
 
         if isinstance(stats_before[0], tuple):
-            log_file.write("\n📉 RIDUZIONE VARIANZA per canale:\n")
+            log_file.write("\n RIDUZIONE VARIANZA per canale:\n")
             for i in range(len(stats_before)):
                 v_before = stats_before[i][1]
                 v_after = stats_after[i][1]
                 perc = 100 * (v_before - v_after) / v_before if v_before != 0 else 0
                 log_file.write(f"  Canale {i}: -{perc:.2f}%\n")
 
-        log_file.write(f"\n🕒 Tempo di esecuzione: {execution_time:.2f} secondi\n")
-        log_file.write(f"📁 Immagine salvata in: {output_image_path}\n")
-        log_file.write(f"🗓️  Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log_file.write(f"\n Tempo di esecuzione: {execution_time:.2f} secondi\n")
+        log_file.write(f" Immagine salvata in: {output_image_path}\n")
+        log_file.write(f" Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
         log_file.write("\n================================================\n")
 
-    print("\n✅ Filtri applicati con successo. Immagini e log salvati.")
+    print("\n Filtri applicati con successo. Immagini e log salvati.")
 
 if __name__ == "__main__":
     main()
