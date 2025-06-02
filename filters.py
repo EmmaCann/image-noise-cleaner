@@ -1,20 +1,26 @@
-import numpy as np
+import numpy as np 
 
 
 def apply_filter_to_channels(image, filter_func, **kwargs):
-    if image.ndim == 3:  # immagine RGB
+    # Applica un filtro canale per canale, utile se l'immagine è RGB
+    if image.ndim == 3:  # RGB
         channels = []
         for c in range(3):
+            
             channel_filtered = filter_func(image[:, :, c], **kwargs)
             channels.append(channel_filtered)
+        # Ricostruzione dell'immagine finale unendo i canali
         return np.stack(channels, axis=2)
     else:
+        # In caso di immagine in scala di grigi
         return filter_func(image, **kwargs)
+
+    
 
 def mean_filter(image, kernel_size=3):
     """
     Applica un filtro di media a un'immagine (array NumPy in scala di grigi).
-    kernel_size: dimensione del filtro (deve essere dispari, es: 3, 5, 7...)
+    kernel_size: dimensione del filtro 
     """
     padded_image = np.pad(image, pad_width=kernel_size//2, mode='edge')
     filtered_image = np.zeros_like(image)
@@ -23,9 +29,9 @@ def mean_filter(image, kernel_size=3):
 
     for i in range(height):
         for j in range(width):
-            # Estraggo finestra (patch) centrata su (i, j)
+           
             window = padded_image[i:i+kernel_size, j:j+kernel_size]
-            # Calcolo la media della finestra
+            
             filtered_image[i, j] = np.mean(window)
 
     return filtered_image
@@ -45,7 +51,7 @@ def gaussian_filter(image, kernel_size=3, sigma=1):
     """
     Applica un filtro gaussiano a un'immagine.
     - image: array 2D grayscale
-    - kernel_size: dimensione del filtro (deve essere dispari)
+    - kernel_size: dimensione del filtro 
     - sigma: deviazione standard della gaussiana
     """
     kernel = gaussian_kernel(kernel_size, sigma)
@@ -67,8 +73,9 @@ def gaussian_filter(image, kernel_size=3, sigma=1):
 
 def median_filter(image, kernel_size=3):
     """
-    Applica un filtro mediano a un'immagine (grayscale).
-    kernel_size: dimensione del filtro (es. 3, 5, 7...)
+    Applica un filtro mediano a un'immagine .
+    kernel_size: dimensione del filtro 
+    sostituisce ogni pixel con la mediana dei pixel attorno,
     """
     pad_size = kernel_size // 2
     padded_image = np.pad(image, pad_size, mode='edge')
@@ -89,7 +96,7 @@ def median_filter(image, kernel_size=3):
 def adaptive_median_filter(image, max_kernel_size=7):
     """
     Applica un filtro mediano adattivo.
-    - max_kernel_size: dimensione massima della finestra (es. 7)
+    - max_kernel_size: dimensione massima della finestra 
     """
     padded_image = np.pad(image, max_kernel_size // 2, mode='edge')
     filtered_image = np.zeros_like(image)
@@ -123,19 +130,18 @@ def adaptive_median_filter(image, max_kernel_size=7):
                     current_size += 2  # aumenta dimensione finestra
 
             if not pixel_filtered:
-                filtered_image[i, j] = z_med  # fallback: usa il mediano finale
+                filtered_image[i, j] = z_med  #  usa il mediano finale
 
     return filtered_image
 
 
-import numpy as np
+
 
 def bilateral_filter(image, kernel_size=5, sigma_spatial=2.0, sigma_intensity=30.0):
     """
-    Applica un filtro bilaterale fatto a mano.
     - kernel_size: dimensione della finestra
-    - sigma_spatial: influenza della distanza (es. 2.0)
-    - sigma_intensity: influenza della differenza di intensità (es. 30.0)
+    - sigma_spatial: influenza della distanza 
+    - sigma_intensity: influenza della differenza di intensità 
     """
     pad = kernel_size // 2
     padded_image = np.pad(image, pad, mode='edge')
@@ -164,3 +170,39 @@ def bilateral_filter(image, kernel_size=5, sigma_spatial=2.0, sigma_intensity=30
     return np.clip(filtered_image, 0, 255).astype(np.uint8)
 
 
+
+def min_filter(image, kernel_size=3):
+    """
+    Filtro Minimo: sostituisce ogni pixel con il valore minimo nella finestra.
+     per rimuovere rumore impulsivo chiaro.
+    """
+    pad = kernel_size // 2
+    padded_image = np.pad(image, pad, mode='edge')
+    filtered_image = np.zeros_like(image)
+
+    height, width = image.shape
+
+    for i in range(height):
+        for j in range(width):
+            region = padded_image[i:i+kernel_size, j:j+kernel_size]
+            filtered_image[i, j] = np.min(region)
+
+    return filtered_image
+
+def max_filter(image, kernel_size=3):
+    """
+    Filtro Massimo: sostituisce ogni pixel con il valore massimo nella finestra.
+     per rimuovere rumore impulsivo scuro.
+    """
+    pad = kernel_size // 2
+    padded_image = np.pad(image, pad, mode='edge')
+    filtered_image = np.zeros_like(image)
+
+    height, width = image.shape
+
+    for i in range(height):
+        for j in range(width):
+            region = padded_image[i:i+kernel_size, j:j+kernel_size]
+            filtered_image[i, j] = np.max(region)
+
+    return filtered_image
